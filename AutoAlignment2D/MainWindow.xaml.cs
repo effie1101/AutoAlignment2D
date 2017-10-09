@@ -58,7 +58,7 @@ namespace AutoAlignment2D
 
             this.btnFindMark.Click += delegate
             {
-                ProcessImage.FindProductMark(ProcessImage.InputManager.MarkImageFile,2000,6);
+                ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile,2000,6);
                 this.imgMark.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
                 this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
                                                                        ProcessImage.OutputManager.AlignmentX,
@@ -73,7 +73,7 @@ namespace AutoAlignment2D
                 ProcessImage.InputManager.AreaEndX = 800;
                 ProcessImage.InputManager.AreaStartY = 350;
                 ProcessImage.InputManager.AreaEndY = 650;
-                ProcessImage.FindProductMark(ProcessImage.InputManager.MarkImageFile, 8000, 4);
+                ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile, 8000, 4);
                 this.imgProbe.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
                 this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
                                                            ProcessImage.OutputManager.AlignmentX,

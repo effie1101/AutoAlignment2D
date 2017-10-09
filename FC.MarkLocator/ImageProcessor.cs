@@ -12,20 +12,27 @@ namespace FC.MarkLocator
     public class ProcessImage
     {
         //设定待检测的闭环区域的最小面积
-     //   int _minContourArea = 2000;
-        int _imgWidth = 0;
-        int _imgHeight = 0;
+        //   int _minContourArea = 2000;
+        const double CCD_W = 4.8;
+        const double CCD_H = 3.6;
 
         public MarkLocator.InputManager InputManager { get { return MarkLocator.InputManager.Instance; } }
 
         public MarkLocator.OutputManager OutputManager { get { return MarkLocator.OutputManager.Instance; } }
 
-        public bool FindProductMark(string imgFile, int minContourArea, int contourSize)
+        /// <summary>
+        /// 计算对位需要调整的距离，输出参数见OutputManager
+        /// </summary>
+        /// <param name="imgFile">输入产品的靶标的原始图片</param>
+        /// <param name="minContourArea">靶标识别的最小面积</param>
+        /// <param name="contourSize">靶标轮廓数</param>
+        /// <returns></returns>
+        public bool MarkAlignment(string imgFile, int minContourArea, int contourSize)
         {
                 bool result = false;
 
-                //find mark contours
-                Mat cutImg, originalImg;
+            //find mark contours
+            Mat cutImg, originalImg;
                 List<RotatedRect> boxList = this.GetContours(imgFile, minContourArea, contourSize, out originalImg, out cutImg);
 
                 #region draw rectangles
@@ -42,8 +49,11 @@ namespace FC.MarkLocator
                     markAngle = Math.Round(boxList[0].Angle, 3);
 
                 //重新映射至原始图像并计算相对测头的位移
-                this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.Probe2CCDX;
-                this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.Probe2CCDY;
+                this.OutputManager.AlignmentX =Math.Round( this.InputManager.BondpadCenterX +(markCenter.X/ originalImg.Width *CCD_W- CCD_W/2) - this.InputManager.Probe2CCDX,3);
+                this.OutputManager.AlignmentY =Math.Round( this.InputManager.BondpadCenterY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) - this.InputManager.Probe2CCDY,3);
+
+                //this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.Probe2CCDX;
+                //this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.Probe2CCDY;
                 this.OutputManager.AlignmentSita =Math.Round( markAngle - this.InputManager.Probe2CCDSita,3);
                     this.OutputManager.MarkImgFile = InputManager.LogFolder+@"\" + DateTime.Now.ToString("yyyyMMdd_HHmmss_") +"outputMarkImage.png";
 
