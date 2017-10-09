@@ -43,6 +43,11 @@ namespace FC.MarkLocator
         private double _probeHeadSita;
         #endregion
 
+        #region probe head location output
+        private double probeCenterX;
+        private double probeCenterY;
+        #endregion
+
         /// <summary>
         /// 测头于X轴需要调整的距离
         /// </summary>
@@ -174,5 +179,32 @@ namespace FC.MarkLocator
             }
         }
 
+        //探针，斑马条，金手指中心在下CCD的图像坐标
+        public double ProbeCenterX
+        {
+            get
+            {
+                return probeCenterX;
+            }
+
+            set
+            {
+                probeCenterX = value;
+            }
+        }
+
+        //探针，斑马条，金手指中心在下CCD的图像坐标
+        public double ProbeCenterY
+        {
+            get
+            {
+                return probeCenterY;
+            }
+
+            set
+            {
+                probeCenterY = value;
+            }
+        }
     }
 }

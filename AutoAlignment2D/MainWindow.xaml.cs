@@ -45,19 +45,42 @@ namespace AutoAlignment2D
         {
             this.btnOpenImgFileU.Click += delegate
             {
+                this.imgMark.Source = null;
                 Mat markImage = GetBitmapFromFile();
                 this.imgMark.Source = BitmapSourceConvert.ToBitmapSource(markImage);
             };
 
+            this.btnOpenImgFileL.Click += delegate
+            {
+                Mat markImage = GetBitmapFromFile();
+                this.imgProbe.Source = BitmapSourceConvert.ToBitmapSource(markImage);
+            };
+
             this.btnFindMark.Click += delegate
             {
-                ProcessImage.FindMark(ProcessImage.InputManager.MarkImageFile);
+                ProcessImage.FindProductMark(ProcessImage.InputManager.MarkImageFile,2000,6);
                 this.imgMark.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
                 this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
                                                                        ProcessImage.OutputManager.AlignmentX,
                                                                        ProcessImage.OutputManager.AlignmentY,
                                                                        ProcessImage.OutputManager.AlignmentSita,
                                                                        ProcessImage.OutputManager.MarkImgFile));
+            };
+
+            this.btnLocateMarkL.Click += delegate
+            {
+                ProcessImage.InputManager.AreaStartX = 500;
+                ProcessImage.InputManager.AreaEndX = 800;
+                ProcessImage.InputManager.AreaStartY = 350;
+                ProcessImage.InputManager.AreaEndY = 650;
+                ProcessImage.FindProductMark(ProcessImage.InputManager.MarkImageFile, 8000, 4);
+                this.imgProbe.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
+                this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
+                                                           ProcessImage.OutputManager.AlignmentX,
+                                                           ProcessImage.OutputManager.AlignmentY,
+                                                           ProcessImage.OutputManager.AlignmentSita,
+                                                           ProcessImage.OutputManager.MarkImgFile));
+
             };
         }
 

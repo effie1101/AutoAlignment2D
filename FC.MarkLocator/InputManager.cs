@@ -37,6 +37,9 @@ namespace FC.MarkLocator
 
         private string _logFolder;
 
+        private double _probeCenterX;
+        private double _probeCenterY;
+
         /// <summary>
         /// imported file of mark image
         /// </summary>
@@ -219,5 +222,32 @@ namespace FC.MarkLocator
             }
         }
 
+        //压头上针座/斑马条/FPC金手指的中心与靶标的相对距离 -- Y向
+        public double ProbeCenterY
+        {
+            get
+            {
+                return _probeCenterY;
+            }
+
+            set
+            {
+                _probeCenterY = value;
+            }
+        }
+
+        //压头上针座/斑马条/FPC金手指的中心与靶标的相对距离 -- X向
+        public double ProbeCenterX
+        {
+            get
+            {
+                return _probeCenterX;
+            }
+
+            set
+            {
+                _probeCenterX = value;
+            }
+        }
     }
 }
