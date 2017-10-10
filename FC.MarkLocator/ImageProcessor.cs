@@ -49,13 +49,17 @@ namespace FC.MarkLocator
                     markAngle = Math.Round(boxList[0].Angle, 3);
 
                 //重新映射至原始图像并计算相对测头的位移
-                this.OutputManager.AlignmentX =Math.Round( this.InputManager.BondpadCenterX +(markCenter.X/ originalImg.Width *CCD_W- CCD_W/2) - this.InputManager.Probe2CCDX,3);
-                this.OutputManager.AlignmentY =Math.Round( this.InputManager.BondpadCenterY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) - this.InputManager.Probe2CCDY,3);
+                this.OutputManager.AlignmentSita = Math.Round(markAngle + this.InputManager.CCD2ProbeSita, 3);
+                this.OutputManager.AlignmentX = Math.Round(0-this.InputManager.ProbeHeadRotateR * Math.Sin(this.OutputManager.AlignmentSita/180 *Math.PI) + this.InputManager.CCD2ProbeX + (markCenter.X / originalImg.Width * CCD_W - CCD_W / 2)+ this.InputManager.BondpadCenterX, 3);
+                this.OutputManager.AlignmentY = Math.Round(this.InputManager.ProbeHeadRotateR *(1-Math.Cos(this.OutputManager.AlignmentSita/180*Math.PI)) + this.InputManager.CCD2ProbeY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) +this.InputManager.BondpadCenterY, 3);
+
+                //this.OutputManager.AlignmentX =Math.Round(InputManager.BondpadCenterX +(markCenter.X/ originalImg.Width *CCD_W- CCD_W/2) - this.InputManager.CCD2ProbeX,3);
+                //this.OutputManager.AlignmentY =Math.Round( this.InputManager.BondpadCenterY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) - this.InputManager.CCD2ProbeY,3);
 
                 //this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.Probe2CCDX;
                 //this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.Probe2CCDY;
-                this.OutputManager.AlignmentSita =Math.Round( markAngle - this.InputManager.Probe2CCDSita,3);
-                    this.OutputManager.MarkImgFile = InputManager.LogFolder+@"\" + DateTime.Now.ToString("yyyyMMdd_HHmmss_") +"outputMarkImage.png";
+
+                this.OutputManager.MarkImgFile = InputManager.LogFolder+@"\" + DateTime.Now.ToString("yyyyMMdd_HHmmss_") +"outputMarkImage.png";
 
                     Point[] markContours = RemapMarkContours(boxList);
                     Mat outputImg = new Mat();
@@ -91,9 +95,9 @@ namespace FC.MarkLocator
                 this.OutputManager.ProbeCenterX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX;
                 this.OutputManager.ProbeCenterX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX;
 
-                this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.Probe2CCDX;
-                this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.Probe2CCDY;
-                this.OutputManager.AlignmentSita = markAngle - this.InputManager.Probe2CCDSita;
+                this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.CCD2ProbeX;
+                this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.CCD2ProbeY;
+                this.OutputManager.AlignmentSita = markAngle - this.InputManager.CCD2ProbeSita;
                 this.OutputManager.MarkImgFile = InputManager.LogFolder + "outputMarkImage.png";
 
                 Point[] markContours = RemapMarkContours(boxList);
@@ -140,7 +144,7 @@ namespace FC.MarkLocator
             CvInvoke.PyrUp(pyrDown, cutImg);
 
             //convert to binary image 
-            CvInvoke.Threshold(cutImg, binaryImg, 100, 255, ThresholdType.BinaryInv);
+            CvInvoke.Threshold(cutImg, binaryImg, 180, 255, ThresholdType.Binary);
             //save binary image
             binaryImg.Save(InputManager.LogFolder + "BinaryImg.png");
             #endregion
@@ -154,7 +158,7 @@ namespace FC.MarkLocator
             watch.Start();
             double cannyThresholdLinking = 120.0;
             UMat cannyEdges = new UMat();
-            CvInvoke.Canny(cutImg, cannyEdges, cannyThreshold, cannyThresholdLinking);
+            CvInvoke.Canny(binaryImg, cannyEdges, cannyThreshold, cannyThresholdLinking);
             cannyEdges.Save(InputManager.LogFolder + "cannyEdges.png");
 
             LineSegment2D[] lines = CvInvoke.HoughLinesP(

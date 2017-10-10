@@ -26,9 +26,9 @@ namespace FC.MarkLocator
 
         private double _bondpadCenterX;
         private double _bondpadCenterY;
-        private double _probe2CCDX;
-        private double _probe2CCDY;
-        private double _probe2CCDSita;
+        private double _CCD2ProbeX;
+        private double _CCD2probeY;
+        private double _CCD2probeSita;
 
         private int _areaStartX;
         private int _areaStartY;
@@ -39,6 +39,8 @@ namespace FC.MarkLocator
 
         private double _probeCenterX;
         private double _probeCenterY;
+
+        private double _probeHeadRotateR;
 
         /// <summary>
         /// imported file of mark image
@@ -94,51 +96,51 @@ namespace FC.MarkLocator
         /// <summary>
         /// 探针,斑马条等contact pad与CCD中心距离的水平位移
         /// </summary>
-        public double Probe2CCDX
+        public double CCD2ProbeX
         {
             get
             {
-                return _probe2CCDX;
+                return _CCD2ProbeX;
             }
 
             set
             {
-                _probe2CCDX = value;
-                OnPropertyChanged("Probe2CCDX");
+                _CCD2ProbeX = value;
+                OnPropertyChanged("CCD2ProbeX");
             }
         }
 
         /// <summary>
         /// 探针,斑马条等contact pad与CCD中心距离的垂直位移
         /// </summary>
-        public double Probe2CCDY
+        public double CCD2ProbeY
         {
             get
             {
-                return _probe2CCDY;
+                return _CCD2probeY;
             }
 
             set
             {
-                _probe2CCDY = value;
-                OnPropertyChanged("Probe2CCDY");
+                _CCD2probeY = value;
+                OnPropertyChanged("CCD2ProbeY");
             }
         }
 
         /// <summary>
         /// 探针,斑马条等contact pad与CCD中心的水平夹角
         /// </summary>
-        public double Probe2CCDSita
+        public double CCD2ProbeSita
         {
             get
             {
-                return _probe2CCDSita;
+                return _CCD2probeSita;
             }
 
             set
             {
-                _probe2CCDSita = value;
-                OnPropertyChanged("Probe2CCDSita");
+                _CCD2probeSita = value;
+                OnPropertyChanged("CCD2ProbeSita");
             }
         }
 
@@ -247,6 +249,21 @@ namespace FC.MarkLocator
             set
             {
                 _probeCenterX = value;
+            }
+        }
+
+        //压头旋转半径
+        public double ProbeHeadRotateR
+        {
+            get
+            {
+                return _probeHeadRotateR;
+            }
+
+            set
+            {
+                _probeHeadRotateR = value;
+                OnPropertyChanged("ProbeHeadRotateR");
             }
         }
     }

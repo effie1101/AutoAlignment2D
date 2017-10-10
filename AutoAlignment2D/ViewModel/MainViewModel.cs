@@ -30,10 +30,12 @@ namespace AutoAlignment2D.ViewModel
         public MainViewModel()
         {
             this.InputManager.BondpadCenterX = 11.4;
-            this.InputManager.BondpadCenterY = 0.2;
-            this.InputManager.Probe2CCDX = 0;
-            this.InputManager.Probe2CCDY = 0;
-            this.InputManager.Probe2CCDSita = 0;
+            this.InputManager.BondpadCenterY = -0.2;
+            this.InputManager.CCD2ProbeX = 0;
+            this.InputManager.CCD2ProbeY = 54.5;
+            this.InputManager.CCD2ProbeSita = 0;
+
+            this.InputManager.ProbeHeadRotateR = 37.5;
 
             this.InputManager.AreaStartX = 450;
             this.InputManager.AreaEndX = 850;

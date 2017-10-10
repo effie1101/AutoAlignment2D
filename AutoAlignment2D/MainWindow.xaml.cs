@@ -58,13 +58,19 @@ namespace AutoAlignment2D
 
             this.btnFindMark.Click += delegate
             {
-                ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile,2000,6);
-                this.imgMark.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
-                this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
-                                                                       ProcessImage.OutputManager.AlignmentX,
-                                                                       ProcessImage.OutputManager.AlignmentY,
-                                                                       ProcessImage.OutputManager.AlignmentSita,
-                                                                       ProcessImage.OutputManager.MarkImgFile));
+                if (ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile, 2000, 6))
+                {
+                    this.imgMark.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
+                    this.rtxtOutput.AppendText(string.Format("[\r\n{0},{1},{2}]\r\n{3}",
+                                                                           ProcessImage.OutputManager.AlignmentX,
+                                                                           ProcessImage.OutputManager.AlignmentY,
+                                                                           ProcessImage.OutputManager.AlignmentSita,
+                                                                           ProcessImage.OutputManager.MarkImgFile));
+                }
+                else
+                {
+                    this.rtxtOutput.AppendText("\r\n靶标识别失败");
+                }
             };
 
             this.btnLocateMarkL.Click += delegate

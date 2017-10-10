@@ -45,16 +45,20 @@
         <StackPanel HorizontalAlignment="Left" Height="230" Margin="499,20,0,0" VerticalAlignment="Top" Width="125">
             <Label x:Name="label" Content="BondPadCenter X: " HorizontalAlignment="Right" VerticalAlignment="Center" Height="30"/>
             <Label x:Name="label1" Content="BondPadCenter Y:" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30"/>
-            <Label x:Name="label2" Content="Probe to CCD X:" Height="30" HorizontalAlignment="Right"/>
-            <Label x:Name="label3" Content="Probe  to CCD Y:" Height="30" HorizontalAlignment="Right"/>
-            <Label x:Name="label4" Content="Probe to  CCD θ:" Height="30" HorizontalAlignment="Right"/>
+            <Label x:Name="label2" Content="CCD to Probe X:" Height="30" HorizontalAlignment="Right"/>
+            <Label x:Name="label3" Content="CCD to Probe Y:" Height="30" HorizontalAlignment="Right"/>
+            <Label x:Name="label4" Content="CCD to Probe θ:" Height="30" HorizontalAlignment="Right"/>
+            <Label x:Name="label21" Content="Rotate Radium:" Height="30" HorizontalAlignment="Right"/>
+
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Margin="627,18,0,556" Width="90">
+        <StackPanel HorizontalAlignment="Left" Margin="627,18,0,507" Width="90">
             <TextBox x:Name="txtBondPadCenterX" Height="30" TextWrapping="Wrap" TextAlignment="Center"  Text="{Binding InputManager.BondpadCenterX,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
             <TextBox x:Name="txtBondPadCenterY" Height="30" TextWrapping="Wrap" TextAlignment="Center"  Text="{Binding InputManager.BondpadCenterY,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-            <TextBox x:Name="txtProbeCCDX" Height="30" TextWrapping="Wrap" TextAlignment="Center"  Text="{Binding InputManager.Probe2CCDX,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-            <TextBox x:Name="txtProbeCCDY" Height="30" TextWrapping="Wrap"  TextAlignment="Center" Text="{Binding InputManager.Probe2CCDY,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
-            <TextBox x:Name="txtProbeCCDSita" Height="30" TextWrapping="Wrap"  TextAlignment="Center" Text="{Binding InputManager.Probe2CCDSita,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+            <TextBox x:Name="txtProbeCCDX" Height="30" TextWrapping="Wrap" TextAlignment="Center"  Text="{Binding InputManager.CCD2ProbeX,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+            <TextBox x:Name="txtProbeCCDY" Height="30" TextWrapping="Wrap"  TextAlignment="Center" Text="{Binding InputManager.CCD2ProbeY,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+            <TextBox x:Name="txtProbeCCDSita" Height="30" TextWrapping="Wrap"  TextAlignment="Center" Text="{Binding InputManager.CCD2ProbeSita,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+            <TextBox x:Name="txtProbeRotateR" Height="30" TextWrapping="Wrap"  TextAlignment="Center" Text="{Binding InputManager.ProbeHeadRotateR,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"/>
+
         </StackPanel>
         <StackPanel HorizontalAlignment="Left" Height="237" Margin="480,263,0,0" VerticalAlignment="Top" Width="144">
             <Label x:Name="label5" Content="Lower to Upper  X:" Height="30" HorizontalAlignment="Right"/>
@@ -69,12 +73,13 @@
             <TextBox x:Name="txtLowerToUpperCCDSita" Height="30" TextWrapping="Wrap" Text="0" TextAlignment="Center" IsEnabled="False"/>
             <TextBox x:Name="txtProbeHeadSita" Height="30" TextWrapping="Wrap" Text="0" TextAlignment="Center" IsEnabled="False"/>
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="164" Margin="717,18,0,0" VerticalAlignment="Top" Width="44">
+        <StackPanel HorizontalAlignment="Left" Height="213" Margin="717,18,0,0" VerticalAlignment="Top" Width="44">
             <Label x:Name="label9" Content="mm" Height="30"/>
             <Label x:Name="label10" Content="mm" Height="30"/>
             <Label x:Name="label11" Content="mm" Height="30"/>
             <Label x:Name="label12" Content="mm" Height="30"/>
             <Label x:Name="label13" Content="°" Height="30"/>
+            <Label x:Name="label12_Copy" Content="mm" Height="30"/>
 
         </StackPanel>
         <StackPanel HorizontalAlignment="Left" Height="237" Margin="722,263,0,0" VerticalAlignment="Top" Width="39">
