@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace FC.MarkLocator
 {
@@ -27,6 +28,7 @@ namespace FC.MarkLocator
         private double _alignmentX;
         private double _alignmentY;
         private double _alignmentSita;
+        private Point[] _markContours;
 
         private string _markImgFile;
 
@@ -204,6 +206,19 @@ namespace FC.MarkLocator
             set
             {
                 probeCenterY = value;
+            }
+        }
+
+        public Point[] MarkContours
+        {
+            get
+            {
+                return _markContours;
+            }
+
+            set
+            {
+                _markContours = value;
             }
         }
     }

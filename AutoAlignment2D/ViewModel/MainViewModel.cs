@@ -42,8 +42,6 @@ namespace AutoAlignment2D.ViewModel
             this.InputManager.AreaStartY = 350;
             this.InputManager.AreaEndY = 650;
 
-            this.InputManager.LogFolder = @"D:\My Project\AutoAlignment2D\AutoAlignment2D\bin\Debug\CCD_Images\";
-
         }
     }
 }

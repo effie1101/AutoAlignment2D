@@ -47,21 +47,23 @@ namespace AutoAlignment2D
             {
                 this.imgMark.Source = null;
                 Mat markImage = GetBitmapFromFile();
+                if (markImage == null) return;
                 this.imgMark.Source = BitmapSourceConvert.ToBitmapSource(markImage);
             };
 
             this.btnOpenImgFileL.Click += delegate
             {
                 Mat markImage = GetBitmapFromFile();
+                if (markImage == null) return;
                 this.imgProbe.Source = BitmapSourceConvert.ToBitmapSource(markImage);
             };
 
             this.btnFindMark.Click += delegate
             {
-                if (ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile, 2000, 6))
+                if (ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile))
                 {
                     this.imgMark.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
-                    this.rtxtOutput.AppendText(string.Format("[\r\n{0},{1},{2}]\r\n{3}",
+                    this.rtxtOutput.AppendText(string.Format("\n[{0},{1},{2}]\n{3}",
                                                                            ProcessImage.OutputManager.AlignmentX,
                                                                            ProcessImage.OutputManager.AlignmentY,
                                                                            ProcessImage.OutputManager.AlignmentSita,
@@ -79,14 +81,19 @@ namespace AutoAlignment2D
                 ProcessImage.InputManager.AreaEndX = 800;
                 ProcessImage.InputManager.AreaStartY = 350;
                 ProcessImage.InputManager.AreaEndY = 650;
-                ProcessImage.MarkAlignment(ProcessImage.InputManager.MarkImageFile, 8000, 4);
-                this.imgProbe.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
-                this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
-                                                           ProcessImage.OutputManager.AlignmentX,
-                                                           ProcessImage.OutputManager.AlignmentY,
-                                                           ProcessImage.OutputManager.AlignmentSita,
-                                                           ProcessImage.OutputManager.MarkImgFile));
-
+                if (ProcessImage.FindProbeMark(ProcessImage.InputManager.MarkImageFile))
+                {
+                    this.imgProbe.Source = new BitmapImage(new Uri(ProcessImage.OutputManager.MarkImgFile));
+                    this.rtxtOutput.AppendText(string.Format("[{0},{1},{2}]\r\n{3}",
+                                                               ProcessImage.OutputManager.AlignmentX,
+                                                               ProcessImage.OutputManager.AlignmentY,
+                                                               ProcessImage.OutputManager.AlignmentSita,
+                                                               ProcessImage.OutputManager.MarkImgFile));
+                }
+                else
+                {
+                    this.rtxtOutput.AppendText("\r\n靶标识别失败");
+                }
             };
         }
 

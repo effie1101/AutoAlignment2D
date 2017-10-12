@@ -35,8 +35,6 @@ namespace FC.MarkLocator
         private int _areaEndX;
         private int _areaEndY;
 
-        private string _logFolder;
-
         private double _probeCenterX;
         private double _probeCenterY;
 
@@ -208,21 +206,6 @@ namespace FC.MarkLocator
             }
         }
 
-        /// <summary>
-        /// log存储的路径
-        /// </summary>
-        public string LogFolder
-        {
-            get
-            {
-                return _logFolder;
-            }
-
-            set
-            {
-                _logFolder = value;
-            }
-        }
 
         //压头上针座/斑马条/FPC金手指的中心与靶标的相对距离 -- Y向
         public double ProbeCenterY

@@ -11,11 +11,10 @@ namespace FC.MarkLocator
 {
     public class ProcessImage
     {
-        //设定待检测的闭环区域的最小面积
-        //   int _minContourArea = 2000;
         const double CCD_W = 4.8;
         const double CCD_H = 3.6;
-
+        string logPath = string.Empty;
+        string DUTNo = string.Empty;
         public MarkLocator.InputManager InputManager { get { return MarkLocator.InputManager.Instance; } }
 
         public MarkLocator.OutputManager OutputManager { get { return MarkLocator.OutputManager.Instance; } }
@@ -24,16 +23,21 @@ namespace FC.MarkLocator
         /// 计算对位需要调整的距离，输出参数见OutputManager
         /// </summary>
         /// <param name="imgFile">输入产品的靶标的原始图片</param>
-        /// <param name="minContourArea">靶标识别的最小面积</param>
-        /// <param name="contourSize">靶标轮廓数</param>
-        /// <returns></returns>
-        public bool MarkAlignment(string imgFile, int minContourArea, int contourSize)
+        /// <returns>bool result</returns>
+        public bool MarkAlignment(string imgFile)
         {
                 bool result = false;
+            //设定待检测的闭环区域的最小面积
+            int minContourArea = 2000;
+                int  contourSize = 6;
+                 int bThresh = 180;
+            DUTNo = System.IO.Path.GetFileNameWithoutExtension(imgFile);
+            logPath = System.IO.Path.GetDirectoryName(imgFile) + @"\" + DUTNo+"_";
+
 
             //find mark contours
             Mat cutImg, originalImg;
-                List<RotatedRect> boxList = this.GetContours(imgFile, minContourArea, contourSize, out originalImg, out cutImg);
+                List<RotatedRect> boxList = this.GetContours(imgFile, bThresh, minContourArea, contourSize, out originalImg, out cutImg);
 
                 #region draw rectangles
 
@@ -46,37 +50,33 @@ namespace FC.MarkLocator
                 {
                     result = true;
                     markCenter = boxList[0].Center;
-                    markAngle = Math.Round(boxList[0].Angle, 3);
+                    markAngle = boxList[0].Angle;
 
                 //重新映射至原始图像并计算相对测头的位移
-                this.OutputManager.AlignmentSita = Math.Round(markAngle + this.InputManager.CCD2ProbeSita, 3);
-                this.OutputManager.AlignmentX = Math.Round(0-this.InputManager.ProbeHeadRotateR * Math.Sin(this.OutputManager.AlignmentSita/180 *Math.PI) + this.InputManager.CCD2ProbeX + (markCenter.X / originalImg.Width * CCD_W - CCD_W / 2)+ this.InputManager.BondpadCenterX, 3);
-                this.OutputManager.AlignmentY = Math.Round(this.InputManager.ProbeHeadRotateR *(1-Math.Cos(this.OutputManager.AlignmentSita/180*Math.PI)) + this.InputManager.CCD2ProbeY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) +this.InputManager.BondpadCenterY, 3);
+                this.OutputManager.AlignmentSita = Math.Round(markAngle + this.InputManager.CCD2ProbeSita, 2);
+                this.OutputManager.AlignmentX = Math.Round(0-this.InputManager.ProbeHeadRotateR * Math.Sin(this.OutputManager.AlignmentSita/180 *Math.PI) + this.InputManager.CCD2ProbeX + (markCenter.X / originalImg.Width * CCD_W - CCD_W / 2)+ this.InputManager.BondpadCenterX, 2);
+                this.OutputManager.AlignmentY = Math.Round(this.InputManager.ProbeHeadRotateR *(1-Math.Cos(this.OutputManager.AlignmentSita/180*Math.PI)) + this.InputManager.CCD2ProbeY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) +this.InputManager.BondpadCenterY, 2);
 
-                //this.OutputManager.AlignmentX =Math.Round(InputManager.BondpadCenterX +(markCenter.X/ originalImg.Width *CCD_W- CCD_W/2) - this.InputManager.CCD2ProbeX,3);
-                //this.OutputManager.AlignmentY =Math.Round( this.InputManager.BondpadCenterY + (markCenter.Y / originalImg.Height * CCD_H - CCD_H / 2) - this.InputManager.CCD2ProbeY,3);
+                this.OutputManager.MarkImgFile =logPath +"output.png";
 
-                //this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.Probe2CCDX;
-                //this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.Probe2CCDY;
-
-                this.OutputManager.MarkImgFile = InputManager.LogFolder+@"\" + DateTime.Now.ToString("yyyyMMdd_HHmmss_") +"outputMarkImage.png";
-
-                    Point[] markContours = RemapMarkContours(boxList);
+                   OutputManager.MarkContours= RemapMarkContours(boxList);
                     Mat outputImg = new Mat();
                     CvInvoke.CvtColor(originalImg, outputImg, ColorConversion.Gray2Bgr);
-                    CvInvoke.Polylines(outputImg, markContours, true, new Bgr(Color.Red).MCvScalar, 2);
+                    CvInvoke.Polylines(outputImg, OutputManager.MarkContours, true, new Bgr(Color.Red).MCvScalar, 1);
                     outputImg.Save(this.OutputManager.MarkImgFile);
                 }
                 #endregion
                 return result;
         }
 
-        public bool FindProbeMark(string imgFile, int minContourArea, int contourSize)
+        public bool FindProbeMark(string imgFile)
         {
             bool result =false;
+            int minContourArea = 8000;
+            int contourSize = 4;
             //find mark contours
             Mat cutImg, originalImg;
-            List<RotatedRect> boxList = this.GetContours(imgFile, minContourArea, contourSize, out originalImg, out cutImg);
+            List<RotatedRect> boxList = this.GetContours(imgFile, 180,minContourArea, contourSize, out originalImg, out cutImg);
 
             #region draw rectangles
 
@@ -95,22 +95,21 @@ namespace FC.MarkLocator
                 this.OutputManager.ProbeCenterX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX;
                 this.OutputManager.ProbeCenterX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX;
 
-                this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.CCD2ProbeX;
-                this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.CCD2ProbeY;
+                //this.OutputManager.AlignmentX = markCenter.X + this.InputManager.AreaStartX + this.InputManager.BondpadCenterX - originalImg.Width / 2.0 - this.InputManager.CCD2ProbeX;
+                //this.OutputManager.AlignmentY = markCenter.Y + this.InputManager.AreaStartY + this.InputManager.BondpadCenterY - originalImg.Height / 2.0 - this.InputManager.CCD2ProbeY;
                 this.OutputManager.AlignmentSita = markAngle - this.InputManager.CCD2ProbeSita;
-                this.OutputManager.MarkImgFile = InputManager.LogFolder + "outputMarkImage.png";
+                this.OutputManager.MarkImgFile = logPath + "outputMarkImage.png";
 
-                Point[] markContours = RemapMarkContours(boxList);
+                OutputManager.MarkContours = RemapMarkContours(boxList);
                 Mat outputImg = new Mat();
                 CvInvoke.CvtColor(originalImg, outputImg, ColorConversion.Gray2Bgr);
-                CvInvoke.Polylines(outputImg, markContours, true, new Bgr(Color.Red).MCvScalar, 2);
+                CvInvoke.Polylines(outputImg, OutputManager.MarkContours, true, new Bgr(Color.Red).MCvScalar, 2);
                 outputImg.Save(this.OutputManager.MarkImgFile);
-                originalImg.Save(InputManager.LogFolder + "original.png");
-
+                originalImg.Save(logPath + "original.png");
             }
             #endregion
 
-            return result;
+            return result;           
         }
 
         /// <summary>
@@ -120,7 +119,7 @@ namespace FC.MarkLocator
         /// <param name="minContourArea">mark的最小识别面积</param>
         /// <param name="contourSize">mark轮廓边数</param>
         /// <returns></returns>
-        public List<RotatedRect> GetContours(string imgFile, int minContourArea, int contourSize, out Mat originalImg, out Mat cutImg)
+        public List<RotatedRect> GetContours(string imgFile, int bThresh, int minContourArea, int contourSize, out Mat originalImg, out Mat cutImg)
         {
             //a box is a rotated rectangle
             List<RotatedRect> boxList = new List<RotatedRect>();
@@ -134,7 +133,6 @@ namespace FC.MarkLocator
             int imgHeight = originalImg.Height;
             //截取对象区域
             cutImg = new Mat(originalImg, new Range(InputManager.AreaStartY, InputManager.AreaEndY), new Range(InputManager.AreaStartX, InputManager.AreaEndX));
-            cutImg.Save(InputManager.LogFolder + "cutImg.png");
             //Convert the image to grayscale and filter out the noise
             Mat binaryImg = new Mat();
 
@@ -144,9 +142,9 @@ namespace FC.MarkLocator
             CvInvoke.PyrUp(pyrDown, cutImg);
 
             //convert to binary image 
-            CvInvoke.Threshold(cutImg, binaryImg, 180, 255, ThresholdType.Binary);
+            CvInvoke.Threshold(cutImg, binaryImg, bThresh, 255, ThresholdType.Binary);
             //save binary image
-            binaryImg.Save(InputManager.LogFolder + "BinaryImg.png");
+            binaryImg.Save(logPath + "BinaryImg.png");
             #endregion
 
             #region Canny and edge detection
@@ -159,7 +157,7 @@ namespace FC.MarkLocator
             double cannyThresholdLinking = 120.0;
             UMat cannyEdges = new UMat();
             CvInvoke.Canny(binaryImg, cannyEdges, cannyThreshold, cannyThresholdLinking);
-            cannyEdges.Save(InputManager.LogFolder + "cannyEdges.png");
+            cannyEdges.Save(logPath + "cannyEdges.png");
 
             LineSegment2D[] lines = CvInvoke.HoughLinesP(
                cannyEdges,
@@ -186,7 +184,7 @@ namespace FC.MarkLocator
                     using (VectorOfPoint approxContour = new VectorOfPoint())
                     {
                         CvInvoke.ApproxPolyDP(contour, approxContour, CvInvoke.ArcLength(contour, true) * 0.05, true);
-                        if (CvInvoke.ContourArea(approxContour, false) > minContourArea) //only consider contours with area greater than 250
+                        if (CvInvoke.ContourArea(approxContour, false) > minContourArea) //only consider contours with area greater than minContourArea
                         {
                             if (approxContour.Size == contourSize) 
                             {

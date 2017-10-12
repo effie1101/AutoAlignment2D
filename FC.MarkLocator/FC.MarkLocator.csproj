@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FC.MarkLocator</RootNamespace>
-    <AssemblyName>FC.MarkLocator</AssemblyName>
+    <AssemblyName>FC.MarkLocator.0551601</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
