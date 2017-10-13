@@ -62,7 +62,7 @@ namespace FC.MarkLocator
                    OutputManager.MarkContours= RemapMarkContours(boxList);
                     Mat outputImg = new Mat();
                     CvInvoke.CvtColor(originalImg, outputImg, ColorConversion.Gray2Bgr);
-                    CvInvoke.Polylines(outputImg, OutputManager.MarkContours, true, new Bgr(Color.Red).MCvScalar, 1);
+                    CvInvoke.Polylines(outputImg, OutputManager.MarkContours, true, new Bgr(Color.Red).MCvScalar, 2);
                     outputImg.Save(this.OutputManager.MarkImgFile);
                 }
                 #endregion
@@ -197,7 +197,7 @@ namespace FC.MarkLocator
                                 {
                                     double angle = Math.Abs(
                                        edges[(j + 1) % edges.Length].GetExteriorAngleDegree(edges[j]));
-                                    if (angle < 80 || angle > 100)
+                                    if (angle < 75 || angle > 100)
                                     {
                                         isRectangle = false;
                                         break;
