@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.CvEnum;
 using FC.MarkLocator;
+using HalconDotNet;
 
 namespace AutoAlignment2D
 {
@@ -27,6 +28,7 @@ namespace AutoAlignment2D
 
         FC.MarkLocator.ProcessImage ProcessImage = new ProcessImage();
         ViewModel.MainViewModel ViewModel = new ViewModel.MainViewModel();
+
 
         public MainWindow()
         {
@@ -45,7 +47,7 @@ namespace AutoAlignment2D
         {
             this.btnOpenImgFileU.Click += delegate
             {
-                this.imgMark.Source = null;
+                    this.imgMark.Source = null;
                 Mat markImage = GetBitmapFromFile();
                 if (markImage == null) return;
                 this.imgMark.Source = BitmapSourceConvert.ToBitmapSource(markImage);
@@ -73,6 +75,8 @@ namespace AutoAlignment2D
                 {
                     this.rtxtOutput.AppendText("\r\n靶标识别失败");
                 }
+
+
             };
 
             this.btnLocateMarkL.Click += delegate
