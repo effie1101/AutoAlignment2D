@@ -27,6 +27,7 @@ namespace AutoAlignment2D
 
         FC.MarkLocator.ProcessImage ProcessImage = new ProcessImage();
         ViewModel.MainViewModel ViewModel = new ViewModel.MainViewModel();
+        HDevelopExport hdev = new HDevelopExport();
 
         public MainWindow()
         {
@@ -49,6 +50,8 @@ namespace AutoAlignment2D
                 Mat markImage = GetBitmapFromFile();
                 if (markImage == null) return;
                 this.imgMark.Source = BitmapSourceConvert.ToBitmapSource(markImage);
+
+                
             };
 
             this.btnOpenImgFileL.Click += delegate

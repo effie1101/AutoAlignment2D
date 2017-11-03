@@ -11,13 +11,15 @@ namespace FC.MarkLocator
 {
     public class ProcessImage
     {
-        const double CCD_W = 4.8;
-        const double CCD_H = 3.6;
+        const double CCD_W = 20;
+        const double CCD_H = 15;
         string logPath = string.Empty;
         string DUTNo = string.Empty;
         public MarkLocator.InputManager InputManager { get { return MarkLocator.InputManager.Instance; } }
 
         public MarkLocator.OutputManager OutputManager { get { return MarkLocator.OutputManager.Instance; } }
+
+        HDevelopExport Hdev = new HDevelopExport();
 
         /// <summary>
         /// 计算对位需要调整的距离，输出参数见OutputManager
@@ -34,6 +36,7 @@ namespace FC.MarkLocator
             DUTNo = System.IO.Path.GetFileNameWithoutExtension(imgFile);
             logPath = System.IO.Path.GetDirectoryName(imgFile) + @"\" + DUTNo+"_";
 
+            Hdev.InitHalcon();
 
             //find mark contours
             Mat cutImg, originalImg;
